@@ -3,6 +3,8 @@ package com.pr0maxx.taskcrud.service;
 import com.pr0maxx.taskcrud.aspect.Loggable;
 import com.pr0maxx.taskcrud.dto.TaskRequest;
 import com.pr0maxx.taskcrud.dto.TaskResponse;
+import com.pr0maxx.taskcrud.kafka.KafkaTaskProducer;
+import com.pr0maxx.taskcrud.kafka.dto.TaskStatusUpdateMessage;
 import com.pr0maxx.taskcrud.model.Task;
 import com.pr0maxx.taskcrud.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final KafkaTaskProducer kafkaTaskProducer;
 
     @Loggable
     public TaskResponse createTask(TaskRequest request) {
@@ -44,6 +47,14 @@ public class TaskService {
         task.setUserId(request.getUserId());
 
         Task updated = taskRepository.save(task);
+
+        TaskStatusUpdateMessage message = new TaskStatusUpdateMessage(
+                updated.getId(),
+                updated.getTitle(),
+                updated.getDescription(),
+                updated.getUserId()
+        );
+        kafkaTaskProducer.sendStatusUpdate(message);
         return toResponse(updated);
     }
 

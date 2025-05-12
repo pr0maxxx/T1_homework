@@ -16,14 +16,12 @@ public class NotificationService {
 
     public void sendStatusUpdate(TaskStatusUpdateMessage message) {
         SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo("maxim.vai@yandex.ru"); // В будущем можно подтянуть по userId
+        email.setTo("maxim.vai@yandex.ru");
         email.setSubject("Task Updated");
 
         StringBuilder body = new StringBuilder();
         body.append("Task ID: ").append(message.getTaskId()).append("\n")
-                .append("Title: ").append(message.getTitle()).append("\n")
-                .append("Description: ").append(message.getDescription()).append("\n")
-                .append("User ID: ").append(message.getUserId());
+                .append("Status: ").append(message.getStatus()).append("\n");
 
         email.setText(body.toString());
 

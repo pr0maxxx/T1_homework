@@ -12,12 +12,6 @@ public class TaskStatusUpdateMessage {
     @JsonProperty("taskId")
     private Long taskId;
 
-    @JsonProperty("title")
-    private String title;
-
-    @JsonProperty("description")
-    private String description;
-
-    @JsonProperty("userId")
-    private Long userId;
+    @JsonProperty("status")
+    private String status;
 }

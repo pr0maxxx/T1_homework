@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class TaskService {
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setUserId(request.getUserId());
+        task.setStatus(request.getStatus());
 
         Task saved = taskRepository.save(task);
         return toResponse(saved);
@@ -42,19 +44,22 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
+        boolean statusChanged = !Objects.equals(task.getStatus(), request.getStatus());
+
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setUserId(request.getUserId());
+        task.setStatus(request.getStatus());
 
         Task updated = taskRepository.save(task);
 
-        TaskStatusUpdateMessage message = new TaskStatusUpdateMessage(
-                updated.getId(),
-                updated.getTitle(),
-                updated.getDescription(),
-                updated.getUserId()
-        );
-        kafkaTaskProducer.sendStatusUpdate(message);
+        if (statusChanged) {
+            TaskStatusUpdateMessage message = new TaskStatusUpdateMessage(
+                    updated.getId(),
+                    updated.getStatus()
+            );
+            kafkaTaskProducer.sendStatusUpdate(message);
+        }
         return toResponse(updated);
     }
 
@@ -76,6 +81,7 @@ public class TaskService {
         response.setTitle(task.getTitle());
         response.setDescription(task.getDescription());
         response.setUserId(task.getUserId());
+        response.setStatus(task.getStatus());
         return response;
     }
 }

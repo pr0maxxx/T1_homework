@@ -13,10 +13,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   mail:
-    host: smtp.gmail.com             # SMTP-сервер (в данном примере — Gmail)
-    port: 587                        # Порт для TLS
-    username: ser92012@gmail.com  # Твоя почта
-    password: kagz sway jflk ddto     # Специальный пароль приложения (не обычный от Gmail)
+    host: smtp.gmail.com
+    port: 587
+    username: ser92012@gmail.com
+    password: kagz sway jflk ddto     
     properties:
       mail:
         smtp:

@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:11.13:///test_db
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+
+t1:
+  kafka:
+    bootstrap:
+      servers: localhost:9092
+    consumer:
+      group-id: t1-demo
+      max.poll.records: 10
+    producer:
+      enable: true
+    topic:
+      task_id_status_change: task-status-change-topic
+    listener:
+      poll-timeout: 1000
